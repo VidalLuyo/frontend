@@ -6,7 +6,8 @@ import type {
   AttendanceStats,
 } from "../models/attendance.model";
 
-const BASE_URL = "http://localhost:9087/api";
+// Esta URL será reemplazada por el script docker-entrypoint.sh
+const BASE_URL = "PLACEHOLDER_API_URL";
 const API_BASE_URL = `${BASE_URL}/attendance`;
 
 // Interfaces para datos sin procesar de los servicios externos
@@ -132,9 +133,7 @@ class AttendanceService {
   }
 
   async getAttendancesByDate(date: string): Promise<AttendanceRecord[]> {
-    return this.fetchData<AttendanceRecord[]>(
-      `${API_BASE_URL}/date/${date}`
-    );
+    return this.fetchData<AttendanceRecord[]>(`${API_BASE_URL}/date/${date}`);
   }
 
   async getAttendancesByClassroomAndDate(
@@ -251,19 +250,23 @@ class AttendanceService {
   async createBulkAttendance(
     data: import("../models/attendance.model").BulkAttendanceDto
   ): Promise<import("../models/attendance.model").BulkAttendanceResponse> {
-    return this.fetchData<import("../models/attendance.model").BulkAttendanceResponse>(
-      `${API_BASE_URL}/bulk`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }
-    );
+    return this.fetchData<
+      import("../models/attendance.model").BulkAttendanceResponse
+    >(`${API_BASE_URL}/bulk`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
   }
 
-  async getStudentsByInstitution(
-    institutionId: string
-  ): Promise<Array<{ id: string; name: string; institutionId?: string; classroomId?: string }>> {
+  async getStudentsByInstitution(institutionId: string): Promise<
+    Array<{
+      id: string;
+      name: string;
+      institutionId?: string;
+      classroomId?: string;
+    }>
+  > {
     try {
       const data = await this.fetchData<Array<RawStudentData>>(
         `${API_BASE_URL}/reference/students/institution/${institutionId}`
@@ -272,11 +275,11 @@ class AttendanceService {
       return data.map((item) => {
         const id = item.id || item.studentId || "";
         const name = item.name || `Estudiante ${id.substring(0, 8)}`;
-        return { 
-          id, 
+        return {
+          id,
           name,
           institutionId: item.institutionId,
-          classroomId: item.classroomId
+          classroomId: item.classroomId,
         };
       });
     } catch (error) {
@@ -300,7 +303,7 @@ class AttendanceService {
           item.name ||
           item.code ||
           (item.id ? `Aula ${item.id.substring(0, 8)}` : "Desconocido"),
-        institutionId: item.institutionId
+        institutionId: item.institutionId,
       }));
     } catch (error) {
       console.error("Error loading classrooms by institution", error);
