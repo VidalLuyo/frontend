@@ -303,15 +303,6 @@ export const enrollmentService = {
    * Crear nueva matrícula
    */
   createEnrollment: async (enrollment: CreateEnrollmentDto): Promise<Enrollment> => {
-    // Log para debug
-    if (API_CONFIG.DEVELOPMENT.LOG_REQUESTS) {
-      console.log('🎯 Creating enrollment with config:', {
-        useMockData: API_CONFIG.DEVELOPMENT.USE_MOCK_DATA,
-        baseUrl: API_CONFIG.BASE_URL,
-        enrollment
-      });
-    }
-
     // Validar datos antes de enviar
     const { isValid, errors } = enrollmentUtils.validateEnrollmentData(enrollment);
     if (!isValid) {
@@ -321,8 +312,6 @@ export const enrollmentService = {
           .join(', ')}`
       );
     }
-
-
 
     const result = await handleRequest<Enrollment>(
       API_CONFIG.ENDPOINTS.CREATE,
@@ -345,27 +334,6 @@ export const enrollmentService = {
       throw new Error('ID de matrícula es requerido para actualizar');
     }
 
-    // Log para debugging de documentos
-    if (API_CONFIG.DEVELOPMENT.LOG_REQUESTS) {
-      console.log('🔄 Actualizando matrícula:', {
-        id,
-        documentos: {
-          birthCertificate: enrollment.birthCertificate,
-          studentDni: enrollment.studentDni,
-          guardianDni: enrollment.guardianDni,
-          vaccinationCard: enrollment.vaccinationCard,
-          disabilityCertificate: enrollment.disabilityCertificate,
-          utilityBill: enrollment.utilityBill,
-          psychologicalReport: enrollment.psychologicalReport,
-          studentPhoto: enrollment.studentPhoto,
-          healthRecord: enrollment.healthRecord,
-          signedEnrollmentForm: enrollment.signedEnrollmentForm,
-          dniVerification: enrollment.dniVerification
-        },
-        payload: enrollment
-      });
-    }
-
     // Validar datos antes de enviar
     const { isValid, errors } = enrollmentUtils.validateEnrollmentData(enrollment);
     if (!isValid) {
@@ -385,29 +353,7 @@ export const enrollmentService = {
     );
 
     // Normalizar datos de documentos en la respuesta
-    const normalizedResult = normalizeEnrollmentDocuments(result);
-
-    // Log de respuesta para debugging
-    if (API_CONFIG.DEVELOPMENT.LOG_RESPONSES) {
-      console.log('✅ Matrícula actualizada - Respuesta del backend:', {
-        id: normalizedResult.id,
-        documentos: {
-          birthCertificate: normalizedResult.birthCertificate,
-          studentDni: normalizedResult.studentDni,
-          guardianDni: normalizedResult.guardianDni,
-          vaccinationCard: normalizedResult.vaccinationCard,
-          disabilityCertificate: normalizedResult.disabilityCertificate,
-          utilityBill: normalizedResult.utilityBill,
-          psychologicalReport: normalizedResult.psychologicalReport,
-          studentPhoto: normalizedResult.studentPhoto,
-          healthRecord: normalizedResult.healthRecord,
-          signedEnrollmentForm: normalizedResult.signedEnrollmentForm,
-          dniVerification: normalizedResult.dniVerification
-        }
-      });
-    }
-
-    return normalizedResult;
+    return normalizeEnrollmentDocuments(result);
   },
 
   /**
@@ -618,23 +564,81 @@ const normalizeBoolean = (value: any): boolean => {
 };
 
 /**
- * Normalizar datos de documentos de matrícula
- * Convierte valores null/undefined/string a booleanos consistentes
+ * Normalizar ageGroup del backend al formato esperado por el frontend
+ * Backend puede enviar: "3 años", "4 años", "5 años" o "3_AÑOS", "4_AÑOS", "5_AÑOS"
+ * Frontend espera: "3_AÑOS", "4_AÑOS", "5_AÑOS"
  */
-const normalizeEnrollmentDocuments = (enrollment: Enrollment): Enrollment => ({
-  ...enrollment,
-  birthCertificate: normalizeBoolean(enrollment.birthCertificate),
-  studentDni: normalizeBoolean(enrollment.studentDni),
-  guardianDni: normalizeBoolean(enrollment.guardianDni),
-  vaccinationCard: normalizeBoolean(enrollment.vaccinationCard),
-  disabilityCertificate: normalizeBoolean(enrollment.disabilityCertificate),
-  utilityBill: normalizeBoolean(enrollment.utilityBill),
-  psychologicalReport: normalizeBoolean(enrollment.psychologicalReport),
-  studentPhoto: normalizeBoolean(enrollment.studentPhoto),
-  healthRecord: normalizeBoolean(enrollment.healthRecord),
-  signedEnrollmentForm: normalizeBoolean(enrollment.signedEnrollmentForm),
-  dniVerification: normalizeBoolean(enrollment.dniVerification),
-});
+const normalizeAgeGroup = (ageGroup: string): string => {
+  if (!ageGroup) return ageGroup;
+  
+  const ageGroupMap: Record<string, string> = {
+    "3 años": "3_AÑOS",
+    "4 años": "4_AÑOS", 
+    "5 años": "5_AÑOS",
+    "3_AÑOS": "3_AÑOS",
+    "4_AÑOS": "4_AÑOS",
+    "5_AÑOS": "5_AÑOS"
+  };
+  
+  return ageGroupMap[ageGroup] || ageGroup;
+};
+
+/**
+ * Calcular studentAge basándose en ageGroup si no existe
+ * Backend: studentAge es Short (puede ser null)
+ * Frontend: necesita number
+ */
+const calculateStudentAge = (enrollment: Enrollment): number | undefined => {
+  // Si ya tiene edad válida, usarla
+  if (enrollment.studentAge !== null && enrollment.studentAge !== undefined && enrollment.studentAge > 0) {
+    return Number(enrollment.studentAge);
+  }
+  
+  // Si no tiene edad, calcularla desde ageGroup
+  const ageMap: Record<string, number> = {
+    "3_AÑOS": 3,
+    "4_AÑOS": 4,
+    "5_AÑOS": 5,
+    "3 años": 3,
+    "4 años": 4,
+    "5 años": 5
+  };
+  
+  return enrollment.ageGroup ? ageMap[enrollment.ageGroup] : undefined;
+};
+
+/**
+ * Normalizar datos de matrícula completos
+ * Convierte valores null/undefined/string a tipos consistentes
+ * Normaliza ageGroup y calcula studentAge si es necesario
+ */
+const normalizeEnrollmentDocuments = (enrollment: Enrollment): Enrollment => {
+  // Normalizar ageGroup al formato esperado
+  const normalizedAgeGroup = normalizeAgeGroup(enrollment.ageGroup);
+  
+  // Calcular edad basándose en el ageGroup normalizado
+  const enrollmentWithNormalizedAge = { ...enrollment, ageGroup: normalizedAgeGroup };
+  const calculatedAge = calculateStudentAge(enrollmentWithNormalizedAge);
+  
+  return {
+    ...enrollment,
+    birthCertificate: normalizeBoolean(enrollment.birthCertificate),
+    studentDni: normalizeBoolean(enrollment.studentDni),
+    guardianDni: normalizeBoolean(enrollment.guardianDni),
+    vaccinationCard: normalizeBoolean(enrollment.vaccinationCard),
+    disabilityCertificate: normalizeBoolean(enrollment.disabilityCertificate),
+    utilityBill: normalizeBoolean(enrollment.utilityBill),
+    psychologicalReport: normalizeBoolean(enrollment.psychologicalReport),
+    studentPhoto: normalizeBoolean(enrollment.studentPhoto),
+    healthRecord: normalizeBoolean(enrollment.healthRecord),
+    signedEnrollmentForm: normalizeBoolean(enrollment.signedEnrollmentForm),
+    dniVerification: normalizeBoolean(enrollment.dniVerification),
+    // Normalizar ageGroup al formato esperado
+    ageGroup: normalizedAgeGroup,
+    // Calcular studentAge si no existe o es inválido
+    studentAge: calculatedAge,
+  };
+};
 
 export const enrollmentUtils = {
   /**

@@ -38,24 +38,7 @@ const DEBUG_CONFIG = {
   SKIP_STATUS_VALIDATION: false,
 } as const;
 
-// Funciones helper locales
-const debugLog = (message: string, data?: any) => {
-  if (DEBUG_CONFIG.VERBOSE_LOGGING) {
-    if (data) {
-      console.log(`🐛 ${message}`, data);
-    } else {
-      console.log(`🐛 ${message}`);
-    }
-  }
-};
-
-const logApiResponse = (endpoint: string, response: any) => {
-  if (DEBUG_CONFIG.LOG_API_RESPONSES) {
-    console.group(`📡 API Response: ${endpoint}`);
-    console.log('Response:', response);
-    console.groupEnd();
-  }
-};
+// Funciones helper locales (logs deshabilitados para producción)
 
 
 
@@ -93,17 +76,10 @@ const handleIntegrationRequest = async <T,>(
 ): Promise<T> => {
   // Si está en modo mock, devolver mock data directamente
   if (INTEGRATION_CONFIG.USE_MOCK_DATA && mockData !== undefined) {
-    if (INTEGRATION_CONFIG.ENABLE_LOGGING) {
-      console.log(`🔧 Using mock data for ${url}:`, mockData);
-    }
     return Promise.resolve(mockData);
   }
 
   try {
-    if (INTEGRATION_CONFIG.ENABLE_LOGGING) {
-      console.log(`🚀 Integration Request: ${options.method || 'GET'} ${url}`);
-    }
-
     const response = await fetchWithTimeout(url, {
       ...options,
       headers: {
@@ -135,11 +111,8 @@ const handleIntegrationRequest = async <T,>(
     return data;
 
   } catch (error) {
-    console.error(`❌ Integration Request Failed for ${url}:`, error);
-    
     // Fallback a mock data si está disponible
     if (mockData !== undefined && !INTEGRATION_CONFIG.USE_MOCK_DATA) {
-      console.warn(`🔄 Falling back to mock data for ${url}:`, mockData);
       return mockData;
     }
     
@@ -162,8 +135,6 @@ export const studentIntegrationService = {
     }
 
     const url = `${INTEGRATION_CONFIG.STUDENT_SERVICE_URL}/api/v1/students/${studentId}`;
-    
-    debugLog(`Obteniendo datos del estudiante: ${studentId} desde ${url}`);
 
     const response = await handleIntegrationRequest<StudentResponse>(
       url,
@@ -171,8 +142,6 @@ export const studentIntegrationService = {
       undefined,
       INTEGRATION_CONFIG.DEFAULT_TIMEOUT
     );
-
-    logApiResponse(`GET /api/v1/students/${studentId}`, response);
     
     return response;
   },
@@ -187,8 +156,6 @@ export const studentIntegrationService = {
     }
 
     const url = `${INTEGRATION_CONFIG.STUDENT_SERVICE_URL}/api/v1/students/cui/${cui}`;
-    
-    debugLog(`Obteniendo estudiante por CUI: ${cui} desde ${url}`);
 
     try {
       const response = await handleIntegrationRequest<StudentResponse>(
@@ -197,8 +164,6 @@ export const studentIntegrationService = {
         undefined,
         INTEGRATION_CONFIG.DEFAULT_TIMEOUT
       );
-
-      logApiResponse(`GET /api/v1/students/cui/${cui}`, response);
       
       return response;
     } catch (error) {
@@ -233,9 +198,6 @@ export const studentIntegrationService = {
       return [response]; // Si funciona, devolver como array
     } catch (error) {
       if (error instanceof Error && error.message.includes('Múltiples estudiantes')) {
-        // Aquí podrías implementar una llamada a un endpoint de búsqueda
-        // Por ejemplo: GET /api/v1/students/search?cui={cui}
-        console.warn(`CUI duplicado detectado: ${cui}. Necesita resolución manual.`);
         throw new Error(`Se encontraron múltiples estudiantes con CUI ${cui}. Por favor, use la búsqueda por ID en su lugar.`);
       }
       throw error;
@@ -269,7 +231,6 @@ export const studentIntegrationService = {
 
       return true;
     } catch (error) {
-      console.error('Error validating student for institution:', error);
       return false;
     }
   },
@@ -286,8 +247,6 @@ export const institutionIntegrationService = {
    */
   getAvailableInstitutions: async (): Promise<InstitutionSummary[]> => {
     const url = `${INTEGRATION_CONFIG.INSTITUTION_SERVICE_URL}/api/v1/institutions/active`;
-    
-    debugLog(`Obteniendo instituciones activas desde: ${url}`);
 
     try {
       // Según la documentación, este endpoint devuelve instituciones con aulas incluidas
@@ -298,28 +257,22 @@ export const institutionIntegrationService = {
         INTEGRATION_CONFIG.DEFAULT_TIMEOUT
       );
 
-      logApiResponse(`GET /api/v1/institutions/active`, response);
-
       // El API devuelve un wrapper con success, message y data
       let institutions: InstitutionCompleteResponseDto[];
       
       if (response && response.success && Array.isArray(response.data)) {
         // Formato con wrapper: { success: true, data: [...] }
         institutions = response.data;
-        debugLog(`Instituciones encontradas (con wrapper): ${institutions.length}`);
       } else if (Array.isArray(response)) {
         // Formato directo: [...]
         institutions = response;
-        debugLog(`Instituciones encontradas (directo): ${institutions.length}`);
       } else {
-        debugLog(`Error: Formato de respuesta no reconocido`, response);
         throw new Error(`Formato de respuesta inválido del API de instituciones`);
       }
 
       // Convertir a formato InstitutionSummary
       return institutions.map(institution => {
         if (!institution || !institution.institutionInformation) {
-          debugLog(`Institución inválida encontrada:`, institution);
           throw new Error('Datos de institución inválidos recibidos del API');
         }
 
@@ -334,7 +287,6 @@ export const institutionIntegrationService = {
         };
       });
     } catch (error) {
-      debugLog(`Error al obtener instituciones:`, error);
       throw error;
     }
   },
@@ -350,16 +302,12 @@ export const institutionIntegrationService = {
 
     const url = `${INTEGRATION_CONFIG.INSTITUTION_SERVICE_URL}/api/v1/institutions/${institutionId}`;
 
-    debugLog(`Obteniendo institución por ID: ${institutionId}`);
-
     const response = await handleIntegrationRequest<any>(
       url,
       { method: 'GET' },
       undefined,
       INTEGRATION_CONFIG.DEFAULT_TIMEOUT
     );
-
-    logApiResponse(`GET /api/v1/institutions/${institutionId}`, response);
 
     // Manejar formato de respuesta con wrapper
     if (response && response.success && response.data) {
@@ -383,16 +331,12 @@ export const institutionIntegrationService = {
 
     const url = `${INTEGRATION_CONFIG.INSTITUTION_SERVICE_URL}/api/v1/classrooms/${classroomId}`;
 
-    debugLog(`Obteniendo aula por ID: ${classroomId}`);
-
     const response = await handleIntegrationRequest<any>(
       url,
       { method: 'GET' },
       undefined,
       INTEGRATION_CONFIG.DEFAULT_TIMEOUT
     );
-
-    logApiResponse(`GET /api/v1/classrooms/${classroomId}`, response);
 
     // Manejar formato de respuesta con wrapper
     if (response && response.success && response.data) {
@@ -412,16 +356,12 @@ export const institutionIntegrationService = {
   getActiveClassrooms: async (): Promise<Classroom[]> => {
     const url = `${INTEGRATION_CONFIG.INSTITUTION_SERVICE_URL}/api/v1/classrooms/active`;
 
-    debugLog(`Obteniendo aulas activas desde: ${url}`);
-
     const response = await handleIntegrationRequest<any>(
       url,
       { method: 'GET' },
       undefined,
       INTEGRATION_CONFIG.DEFAULT_TIMEOUT
     );
-
-    logApiResponse(`GET /api/v1/classrooms/active`, response);
 
     // Manejar formato de respuesta con wrapper
     if (response && response.success && Array.isArray(response.data)) {
@@ -537,7 +477,6 @@ export const institutionIntegrationService = {
 
       return true;
     } catch (error) {
-      console.error('Error validating institution and classroom:', error);
       return false;
     }
   },
@@ -603,7 +542,6 @@ export const enrollmentValidationService = {
 
       return result;
     } catch (error) {
-      console.error('Error validating enrollment data:', error);
       return {
         studentValid: false,
         institutionValid: false,
@@ -640,13 +578,11 @@ export const integrationUtils = {
   isStudentActive: (status: string): boolean => {
     // Si está en modo debug y se permite estudiantes inactivos, siempre retornar true
     if (DEBUG_CONFIG.ALLOW_INACTIVE_STUDENTS || DEBUG_CONFIG.SKIP_STATUS_VALIDATION) {
-      debugLog(`Debug mode: Permitiendo estudiante con estado "${status}"`);
       return true;
     }
     
     // Soportar ambos formatos: 'A' (formato corto) y 'ACTIVE' (formato largo)
     const isActive = status === 'A' || status === 'ACTIVE';
-    debugLog(`Validando estado de estudiante: "${status}" -> ${isActive ? 'ACTIVO' : 'INACTIVO'}`);
     return isActive;
   },
 

@@ -90,7 +90,8 @@ export const showSuccessAlertHtml = (title: string, htmlMessage: string) => {
           title,
           html: htmlMessage,
           confirmButtonText: 'Entendido',
-          confirmButtonColor: '#10b981'
+          confirmButtonColor: '#10b981',
+          width: '600px'
      })
 }
 
@@ -100,6 +101,7 @@ export const showErrorAlertHtml = (title: string, htmlMessage: string) => {
           title,
           html: htmlMessage,
           confirmButtonText: 'Entendido',
-          confirmButtonColor: '#ef4444'
+          confirmButtonColor: '#ef4444',
+          width: '600px'
      })
 }

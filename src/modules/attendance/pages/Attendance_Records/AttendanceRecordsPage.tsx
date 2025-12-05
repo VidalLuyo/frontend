@@ -27,8 +27,18 @@ export function AttendanceRecordsPage() {
   const [dateFilter, setDateFilter] = useState("");
   const [institutionFilter, setInstitutionFilter] = useState("");
   const [classroomFilter, setClassroomFilter] = useState("");
-  const [justifiedFilter, setJustifiedFilter] = useState<"all" | "yes" | "no">("all");
+  const [justifiedFilter, setJustifiedFilter] = useState<"all" | "yes" | "no">(
+    "all"
+  );
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
   const applyFilters = useCallback(
     (
@@ -59,7 +69,9 @@ export function AttendanceRecordsPage() {
       }
 
       if (institution) {
-        filtered = filtered.filter((item) => item.institutionId === institution);
+        filtered = filtered.filter(
+          (item) => item.institutionId === institution
+        );
       }
 
       if (classroom) {
@@ -67,7 +79,7 @@ export function AttendanceRecordsPage() {
       }
 
       if (justified !== "all") {
-        filtered = filtered.filter((item) => 
+        filtered = filtered.filter((item) =>
           justified === "yes" ? item.justified : !item.justified
         );
       }
@@ -83,7 +95,15 @@ export function AttendanceRecordsPage() {
       setError(null);
       const attendances = await attendanceService.getAllAttendances();
       setItems(attendances);
-      applyFilters(attendances, searchTerm, statusFilter, dateFilter, institutionFilter, classroomFilter, justifiedFilter);
+      applyFilters(
+        attendances,
+        searchTerm,
+        statusFilter,
+        dateFilter,
+        institutionFilter,
+        classroomFilter,
+        justifiedFilter
+      );
     } catch {
       setError(
         "No se pudo conectar con el servidor. Verifique que esté ejecutándose en el puerto 9082."
@@ -91,7 +111,15 @@ export function AttendanceRecordsPage() {
     } finally {
       setLoading(false);
     }
-  }, [applyFilters, searchTerm, statusFilter, dateFilter, institutionFilter, classroomFilter, justifiedFilter]);
+  }, [
+    applyFilters,
+    searchTerm,
+    statusFilter,
+    dateFilter,
+    institutionFilter,
+    classroomFilter,
+    justifiedFilter,
+  ]);
 
   const getSuggestions = () => {
     if (!searchInput.trim()) return [];
@@ -132,12 +160,32 @@ export function AttendanceRecordsPage() {
     setSearchInput(name);
     setSearchTerm(name);
     setShowSuggestions(false);
-    applyFilters(items, name, statusFilter, dateFilter, institutionFilter, classroomFilter, justifiedFilter);
+    applyFilters(
+      items,
+      name,
+      statusFilter,
+      dateFilter,
+      institutionFilter,
+      classroomFilter,
+      justifiedFilter
+    );
   };
 
   useEffect(() => {
     fetchAttendances();
   }, [fetchAttendances]);
+
+  // Resetear página cuando cambien los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchTerm,
+    statusFilter,
+    dateFilter,
+    institutionFilter,
+    classroomFilter,
+    justifiedFilter,
+  ]);
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -453,7 +501,9 @@ export function AttendanceRecordsPage() {
                       setShowSuggestions(true);
                     }}
                     onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    onBlur={() =>
+                      setTimeout(() => setShowSuggestions(false), 200)
+                    }
                     className="block w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all duration-200"
                   />
 
@@ -495,7 +545,15 @@ export function AttendanceRecordsPage() {
                   onChange={(e) => {
                     const value = e.target.value as AttendanceStatus | "all";
                     setStatusFilter(value);
-                    applyFilters(items, searchTerm, value, dateFilter, institutionFilter, classroomFilter, justifiedFilter);
+                    applyFilters(
+                      items,
+                      searchTerm,
+                      value,
+                      dateFilter,
+                      institutionFilter,
+                      classroomFilter,
+                      justifiedFilter
+                    );
                   }}
                   className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all duration-200"
                 >
@@ -511,7 +569,15 @@ export function AttendanceRecordsPage() {
                   value={dateFilter}
                   onChange={(e) => {
                     setDateFilter(e.target.value);
-                    applyFilters(items, searchTerm, statusFilter, e.target.value, institutionFilter, classroomFilter, justifiedFilter);
+                    applyFilters(
+                      items,
+                      searchTerm,
+                      statusFilter,
+                      e.target.value,
+                      institutionFilter,
+                      classroomFilter,
+                      justifiedFilter
+                    );
                   }}
                   className="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all duration-200"
                 />
@@ -735,10 +801,91 @@ export function AttendanceRecordsPage() {
         {/* Table */}
         <div className="bg-white rounded-lg border border-gray-100">
           <AttendanceList
-            items={filteredItems}
+            items={paginatedItems}
             onDelete={handleDelete}
             onJustify={handleJustify}
           />
+
+          {/* Paginación */}
+          {filteredItems.length > 0 && (
+            <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  Mostrando{" "}
+                  <span className="font-semibold text-gray-900">
+                    {startIndex + 1}
+                  </span>{" "}
+                  a{" "}
+                  <span className="font-semibold text-gray-900">
+                    {Math.min(endIndex, filteredItems.length)}
+                  </span>{" "}
+                  de{" "}
+                  <span className="font-semibold text-gray-900">
+                    {filteredItems.length}
+                  </span>{" "}
+                  registros
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                    Anterior
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg">
+                      {currentPage}
+                    </span>
+                    <span className="text-sm text-gray-500">de</span>
+                    <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg">
+                      {totalPages}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
+                  >
+                    Siguiente
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

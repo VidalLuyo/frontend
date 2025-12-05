@@ -51,27 +51,55 @@ export function EnrollmentForm({ enrollment, academicPeriods, onSave, onCancel }
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"basic" | "documents">("basic");
 
+  // Cargar datos de matrícula al editar - SOLO UNA VEZ
   useEffect(() => {
     if (enrollment) {
-      setFormData(enrollment);
+      // Normalizar ageGroup del backend al formato esperado
+      const normalizeAgeGroup = (ageGroup: string): string => {
+        const ageGroupMap: Record<string, string> = {
+          "3 años": "3_AÑOS",
+          "4 años": "4_AÑOS", 
+          "5 años": "5_AÑOS",
+          "3_AÑOS": "3_AÑOS",
+          "4_AÑOS": "4_AÑOS",
+          "5_AÑOS": "5_AÑOS"
+        };
+        return ageGroupMap[ageGroup] || ageGroup;
+      };
+
+      // Calcular edad desde ageGroup si no viene del backend
+      const calculateAgeFromGroup = (ageGroup: string): number => {
+        const normalizedGroup = normalizeAgeGroup(ageGroup);
+        const ageMap: Record<string, number> = {
+          "3_AÑOS": 3,
+          "4_AÑOS": 4,
+          "5_AÑOS": 5
+        };
+        return ageMap[normalizedGroup] || 3;
+      };
+
+      const normalizedAgeGroup = normalizeAgeGroup(enrollment.ageGroup);
+      
+      // SIEMPRE calcular la edad desde el ageGroup para evitar problemas de concatenación
+      const calculatedAge = calculateAgeFromGroup(enrollment.ageGroup);
+
+      console.log('📝 Cargando matrícula para edición:', {
+        enrollmentId: enrollment.id,
+        originalAge: enrollment.studentAge,
+        originalAgeType: typeof enrollment.studentAge,
+        originalAgeGroup: enrollment.ageGroup,
+        normalizedAgeGroup: normalizedAgeGroup,
+        calculatedAge: calculatedAge,
+        calculatedAgeType: typeof calculatedAge
+      });
+
+      setFormData({
+        ...enrollment,
+        ageGroup: normalizedAgeGroup,
+        studentAge: calculatedAge
+      });
     }
   }, [enrollment]);
-
-  // Actualizar edad automáticamente cuando cambia el grupo de edad
-  useEffect(() => {
-    const ageMap = {
-      "3_AÑOS": 3,
-      "4_AÑOS": 4,
-      "5_AÑOS": 5
-    };
-    
-    if (formData.ageGroup && ageMap[formData.ageGroup as keyof typeof ageMap]) {
-      setFormData(prev => ({ 
-        ...prev, 
-        studentAge: ageMap[formData.ageGroup as keyof typeof ageMap] 
-      }));
-    }
-  }, [formData.ageGroup]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -79,6 +107,23 @@ export function EnrollmentForm({ enrollment, academicPeriods, onSave, onCancel }
     if (type === 'checkbox') {
       const checkbox = e.target as HTMLInputElement;
       setFormData(prev => ({ ...prev, [name]: checkbox.checked }));
+    } else if (type === 'number') {
+      // Para campos numéricos, convertir explícitamente a número
+      const numValue = value === '' ? undefined : parseInt(value, 10);
+      setFormData(prev => ({ ...prev, [name]: numValue }));
+    } else if (name === 'ageGroup') {
+      // Si el usuario cambia el grupo de edad, actualizar la edad correspondiente
+      const ageMap = {
+        "3_AÑOS": 3,
+        "4_AÑOS": 4,
+        "5_AÑOS": 5
+      };
+      const newAge = ageMap[value as keyof typeof ageMap];
+      setFormData(prev => ({ 
+        ...prev, 
+        [name]: value,
+        studentAge: newAge || prev.studentAge
+      }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }

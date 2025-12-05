@@ -27,86 +27,86 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  {
-    id: "institution",
-    label: "Institución",
-    icon: <Building2 size={20} />,
-    path: "/institucion",
-  },
-  {
-    id: "users",
-    label: "Usuarios",
-    icon: <UserCircle size={20} />,
-    path: "/usuarios",
-  },
-  {
-    id: "students",
-    label: "Estudiantes",
-    icon: <Users size={20} />,
-    path: "/estudiantes",
-  },
-  {
-    id: "enrollments",
-    label: "Matrículas",
-    icon: <UserPlus size={20} />,
-    path: "/matriculas",
-  },
-  {
-    id: "academic",
-    label: "Gestión Académica",
-    icon: <BookOpen size={20} />,
-    path: "/gestion-academica",
-  },
-  {
-    id: "TeacherManagement",
-    label: "Gestion de Profesores",
-    icon: <GraduationCap size={20} />,
-    path: "/cursos",
-  },
-  {
-    id: "events",
-    label: "Eventos",
-    icon: <Calendar size={20} />,
-    path: "/eventos",
-  },
-  {
-    id: "grades",
-    label: "Notas",
-    icon: <FileText size={20} />,
-    path: "/notas",
-  },
-  {
-    id: "attendance",
-    label: "Asistencias",
-    icon: <ClipboardCheck size={20} />,
-    path: "/asistencias",
-  },
-  {
-    id: "behavior",
-    label: "Comportamiento",
-    icon: <Shield size={20} />,
-    path: "/comportamiento",
-  },
-  {
-    id: "psychology",
-    label: "Psicología",
-    icon: <Brain size={20} />,
-    path: "/psychology",
-    children: [
-      {
-        id: "psychology-evaluations",
-        label: "Evaluaciones",
-        icon: <Brain size={16} />,
-        path: "/psychology",
-      },
-      {
-        id: "psychology-support",
-        label: "Área de Soporte Especial",
-        icon: <Brain size={16} />,
-        path: "/psychology/supports",
-      },
-    ],
-  },
+     {
+          id: "institution",
+          label: "Institución",
+          icon: <Building2 size={20} />,
+          path: "/institucion",
+     },
+     {
+          id: "users",
+          label: "Usuarios",
+          icon: <UserCircle size={20} />,
+          path: "/usuarios",
+     },
+     {
+          id: "students",
+          label: "Estudiantes",
+          icon: <Users size={20} />,
+          path: "/estudiantes",
+     },
+     {
+          id: "enrollments",
+          label: "Matrículas",
+          icon: <UserPlus size={20} />,
+          path: "/matriculas",
+     },
+     {
+          id: "academic",
+          label: "Gestión Académica",
+          icon: <BookOpen size={20} />,
+          path: "/gestion-academica",
+     },
+     {
+          id: "TeacherManagement",
+          label: "Gestion de Profesores",
+          icon: <GraduationCap size={20} />,
+          path: "/asignaciones",
+     },
+     {
+          id: "events",
+          label: "Eventos",
+          icon: <Calendar size={20} />,
+          path: "/eventos",
+     },
+     {
+          id: "grades",
+          label: "Notas",
+          icon: <FileText size={20} />,
+          path: "/notas",
+     },
+     {
+          id: "attendance",
+          label: "Asistencias",
+          icon: <ClipboardCheck size={20} />,
+          path: "/asistencias",
+     },
+     {
+          id: "behavior",
+          label: "Comportamiento",
+          icon: <Shield size={20} />,
+          path: "/comportamiento",
+     },
+     {
+          id: "psychology",
+          label: "Psicología",
+          icon: <Brain size={20} />,
+          path: "/psychology",
+          children: [
+               {
+                    id: "psychology-evaluations",
+                    label: "Evaluaciones",
+                    icon: <Brain size={16} />,
+                    path: "/psychology",
+               },
+               {
+                    id: "psychology-support",
+                    label: "Área de Soporte Especial",
+                    icon: <Brain size={16} />,
+                    path: "/psychology/supports",
+               },
+          ],
+     },
 ];
 
 export function Sidebar() {

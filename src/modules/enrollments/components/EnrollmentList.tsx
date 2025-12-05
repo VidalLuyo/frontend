@@ -48,16 +48,9 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
       // Cargar datos de estudiantes en paralelo
       const studentPromises = studentsToLoad.map(async (studentId) => {
         try {
-          if (import.meta.env.DEV) {
-            console.log(`🔍 Cargando datos del estudiante: ${studentId}`)
-          }
           const studentResponse = await studentIntegrationService.getStudentById(studentId)
-          if (import.meta.env.DEV) {
-            console.log(`✅ Datos del estudiante ${studentId} cargados:`, studentResponse)
-          }
           return { studentId, data: studentResponse, error: null }
         } catch (error) {
-          console.error(`❌ Error cargando estudiante ${studentId}:`, error)
           return { studentId, data: null, error: error instanceof Error ? error.message : 'Error desconocido' }
         }
       })
@@ -89,7 +82,7 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
     }
 
     loadStudentData()
-  }, [items, studentsData, loadingStudents])
+  }, [items])
 
   // Función para obtener el nombre del estudiante
   const getStudentDisplayName = (studentId: string): string => {
@@ -101,7 +94,11 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
     }
     
     if (error) {
-      return `Error: ${studentId.slice(0, 8)}...`
+      // Mostrar mensaje más claro si el estudiante no existe
+      if (error.includes('404') || error.includes('Not Found')) {
+        return `Estudiante no encontrado`
+      }
+      return `Error al cargar`
     }
     
     if (studentData?.success && studentData.data) {
@@ -128,10 +125,14 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
     }
     
     if (error) {
+      const errorMsg = error.includes('404') || error.includes('Not Found')
+        ? `Estudiante no encontrado en el sistema (ID: ${studentId})`
+        : `Error al cargar estudiante (ID: ${studentId}): ${error}`;
+      
       return { 
         iconClass: 'bg-red-100', 
         userClass: 'text-red-600',
-        tooltip: `Error al cargar estudiante: ${error}`
+        tooltip: errorMsg
       }
     }
     
@@ -146,7 +147,7 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
     return { 
       iconClass: 'bg-blue-100', 
       userClass: 'text-blue-600',
-      tooltip: 'Datos del estudiante no disponibles'
+      tooltip: `Datos del estudiante no disponibles (ID: ${studentId})`
     }
   }
 
@@ -238,29 +239,6 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
     const completed = documents.filter(Boolean).length;
     const total = documents.length;
     const percentage = Math.round((completed / total) * 100);
-    
-    // Debug: Log para ver qué documentos están llegando (solo en desarrollo)
-    if (import.meta.env.DEV) {
-      console.log(`📋 Documentos para matrícula ${enrollment.id}:`, {
-        rawValues: {
-          birthCertificate: enrollment.birthCertificate,
-          studentDni: enrollment.studentDni,
-          guardianDni: enrollment.guardianDni,
-          vaccinationCard: enrollment.vaccinationCard,
-          disabilityCertificate: enrollment.disabilityCertificate,
-          utilityBill: enrollment.utilityBill,
-          psychologicalReport: enrollment.psychologicalReport,
-          studentPhoto: enrollment.studentPhoto,
-          healthRecord: enrollment.healthRecord,
-          signedEnrollmentForm: enrollment.signedEnrollmentForm,
-          dniVerification: enrollment.dniVerification
-        },
-        normalizedValues: documents,
-        completed,
-        total,
-        percentage
-      });
-    }
     
     return { completed, total, percentage };
   };
@@ -385,14 +363,7 @@ export function EnrollmentList({ items, onDelete, onView, onEdit, onActivate, on
                               {docProgress.percentage}%
                             </span>
                             {/* Indicador de datos de prueba */}
-                            {import.meta.env.DEV && docProgress.completed > 0 && (
-                              <span 
-                                className="text-xs bg-blue-100 text-blue-600 px-1 rounded" 
-                                title="Datos de prueba - El backend aún no maneja documentos"
-                              >
-                                TEST
-                              </span>
-                            )}
+
                           </div>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">

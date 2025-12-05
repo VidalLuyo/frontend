@@ -358,43 +358,17 @@ export function AttendanceRecordsBulkCreatePage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header limpio */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/asistencias")}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                <span>Volver</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300" />
-              <h1 className="text-xl font-semibold text-gray-900">
-                Registro Masivo de Asistencia
-              </h1>
-            </div>
+        <div className="max-w-[1600px] mx-auto px-8 lg:px-12">
+          <div className="flex items-center h-16">
             <button
-              type="button"
-              onClick={() => navigate("/asistencias/nuevo")}
-              className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              onClick={() => navigate("/asistencias")}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <svg
-                className="w-4 h-4"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -403,51 +377,39 @@ export function AttendanceRecordsBulkCreatePage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  d="M15 19l-7-7 7-7"
                 />
               </svg>
-              <span>Registro Individual</span>
+              <span className="font-medium">Volver</span>
             </button>
+            <div className="h-6 w-px bg-gray-300 mx-4" />
+            <h1 className="text-xl font-semibold text-gray-900">
+              Registro Masivo de Asistencia
+            </h1>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-[1600px] mx-auto px-8 lg:px-12 py-6">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Panel - Configuration */}
+            {/* Panel de configuración - 1/3 */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                {/* Header del panel */}
-                <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-4">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
-                    Configuración de Registro
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                    Configuración
                   </h2>
-                  <p className="text-indigo-100 text-xs mt-1">
-                    Complete los datos para el registro masivo
+                  <p className="text-sm text-gray-500 mb-5">
+                    Datos del registro masivo
                   </p>
-                </div>
 
-                <div className="p-4">
-                  {/* Campos del formulario */}
-                  <div className="space-y-3 mb-4">
+                  <div className="space-y-4">
                     {/* Institución */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
-                        Institución Educativa
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Institución Educativa{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <select
                         value={selectedInstitution}
@@ -455,7 +417,7 @@ export function AttendanceRecordsBulkCreatePage() {
                           setSelectedInstitution(e.target.value);
                           setSelectedStudents(new Set());
                         }}
-                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                        className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm"
                         required
                       >
                         <option value="">Seleccione institución</option>
@@ -469,8 +431,8 @@ export function AttendanceRecordsBulkCreatePage() {
 
                     {/* Aula */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
-                        Aula
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Aula <span className="text-red-500">*</span>
                       </label>
                       <select
                         value={formData.classroomId}
@@ -480,7 +442,7 @@ export function AttendanceRecordsBulkCreatePage() {
                             classroomId: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500"
                         required
                         disabled={!selectedInstitution}
                       >
@@ -500,8 +462,8 @@ export function AttendanceRecordsBulkCreatePage() {
                     {/* Fecha y Año en grid */}
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-700 mb-1">
-                          Fecha
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Fecha <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="date"
@@ -512,28 +474,28 @@ export function AttendanceRecordsBulkCreatePage() {
                               attendanceDate: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                          className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm"
                           required
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
                           Año
                         </label>
                         <input
                           type="number"
                           value={formData.academicYear}
                           readOnly
-                          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-not-allowed"
+                          className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700"
                         />
                       </div>
                     </div>
 
                     {/* Estado */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wide">
-                        Estado
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Estado <span className="text-red-500">*</span>
                       </label>
                       <select
                         value={formData.attendanceStatus}
@@ -544,7 +506,7 @@ export function AttendanceRecordsBulkCreatePage() {
                               .value as AttendanceStatus,
                           })
                         }
-                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                        className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm"
                         required
                       >
                         <option value="PRESENTE">Presente</option>
@@ -555,23 +517,23 @@ export function AttendanceRecordsBulkCreatePage() {
 
                     {/* Hora de Llegada */}
                     <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">
-                        Hora Llegada (Automática)
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Hora de Llegada (Automática)
                       </label>
                       <input
                         type="time"
                         value={formData.arrivalTime}
                         readOnly
-                        className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-not-allowed"
+                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700"
                       />
                     </div>
                   </div>
 
                   {/* Resumen */}
-                  <div className="bg-indigo-50 rounded-lg p-3 border border-indigo-100">
+                  <div className="mt-5 bg-indigo-50 rounded-lg p-4 border border-indigo-100">
                     <div className="flex items-center justify-center gap-2">
                       <svg
-                        className="w-5 h-5 text-indigo-600"
+                        className="w-6 h-6 text-indigo-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -593,41 +555,44 @@ export function AttendanceRecordsBulkCreatePage() {
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Botones */}
-                  <div className="flex gap-2 pt-3">
-                    <button
-                      type="button"
-                      onClick={() => navigate("/asistencias")}
-                      className="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading || selectedStudents.size === 0}
-                      className="flex-1 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                    >
-                      {loading ? "Registrando..." : "Registrar"}
-                    </button>
-                  </div>
+                {/* Botones */}
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/asistencias")}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading || selectedStudents.size === 0}
+                    className="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 shadow-sm text-sm"
+                  >
+                    {loading ? "Registrando..." : "Registrar"}
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Panel derecho - Lista de estudiantes */}
+            {/* Panel derecho - Lista de estudiantes - 2/3 */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div className="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                  <h2 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">
                     Seleccionar Estudiantes
                   </h2>
+                  <p className="text-sm text-gray-500 mb-5">
+                    Marque los estudiantes para el registro masivo
+                  </p>
 
                   {/* Búsqueda */}
                   <div className="relative mb-4">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-4 h-4 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -645,37 +610,35 @@ export function AttendanceRecordsBulkCreatePage() {
                       placeholder="Buscar estudiante por nombre..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white hover:border-gray-400"
+                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-white text-sm"
                       disabled={!selectedInstitution}
                     />
                   </div>
 
                   {/* Seleccionar todos */}
                   {filteredStudents.length > 0 && (
-                    <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                    <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg border border-indigo-100 mb-4">
                       <input
                         type="checkbox"
                         checked={
                           selectedStudents.size === filteredStudents.length
                         }
                         onChange={handleSelectAll}
-                        className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 transition-all duration-200"
+                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                       />
-                      <label className="text-sm font-semibold text-gray-700">
+                      <label className="text-sm font-medium text-gray-700">
                         Seleccionar todos ({filteredStudents.length}{" "}
                         estudiantes)
                       </label>
                     </div>
                   )}
-                </div>
 
-                {/* Lista de estudiantes */}
-                <div className="p-6">
+                  {/* Lista de estudiantes */}
                   {!selectedInstitution ? (
                     <div className="text-center py-12">
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                      <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                         <svg
-                          className="w-8 h-8 text-gray-400"
+                          className="w-7 h-7 text-gray-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -688,15 +651,15 @@ export function AttendanceRecordsBulkCreatePage() {
                           />
                         </svg>
                       </div>
-                      <p className="text-gray-600 font-medium">
+                      <p className="text-gray-600 font-medium text-sm">
                         Paso 1: Seleccione una institución
                       </p>
                     </div>
                   ) : !formData.classroomId ? (
                     <div className="text-center py-12">
-                      <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                      <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                         <svg
-                          className="w-8 h-8 text-blue-600"
+                          className="w-7 h-7 text-blue-600"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -709,24 +672,26 @@ export function AttendanceRecordsBulkCreatePage() {
                           />
                         </svg>
                       </div>
-                      <p className="text-blue-600 font-medium mb-2">
+                      <p className="text-blue-600 font-medium mb-1.5 text-sm">
                         Paso 2: Seleccione un aula
                       </p>
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-gray-500 text-xs">
                         Los estudiantes se mostrarán después de seleccionar el
                         aula
                       </p>
                     </div>
                   ) : loadingStudents ? (
                     <div className="text-center py-12">
-                      <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                      <p className="text-gray-600">Cargando estudiantes...</p>
+                      <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                      <p className="text-gray-600 text-sm">
+                        Cargando estudiantes...
+                      </p>
                     </div>
                   ) : filteredStudents.length === 0 ? (
-                    <div className="text-center py-16">
-                      <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-amber-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                         <svg
-                          className="w-10 h-10 text-amber-600"
+                          className="w-8 h-8 text-amber-600"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -739,7 +704,7 @@ export function AttendanceRecordsBulkCreatePage() {
                           />
                         </svg>
                       </div>
-                      <p className="text-gray-700 font-semibold text-lg mb-2">
+                      <p className="text-gray-700 font-semibold mb-2">
                         No hay estudiantes en esta aula
                       </p>
                       <p className="text-gray-500 text-sm max-w-md mx-auto">
@@ -758,27 +723,27 @@ export function AttendanceRecordsBulkCreatePage() {
                       )}
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[600px] overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[450px] overflow-y-auto pr-2">
                       {filteredStudents.map((student) => (
                         <label
                           key={student.id}
-                          className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                          className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${
                             selectedStudents.has(student.id)
-                              ? "border-blue-500 bg-blue-50"
-                              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                              ? "border-indigo-500 bg-indigo-50 shadow-sm"
+                              : "border-gray-200 hover:border-indigo-300 hover:bg-gray-50"
                           }`}
                         >
                           <input
                             type="checkbox"
                             checked={selectedStudents.has(student.id)}
                             onChange={() => handleToggleStudent(student.id)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                           />
-                          <div className="flex-1">
-                            <p className="font-medium text-gray-900">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 text-sm truncate">
                               {student.name}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 mt-0.5">
                               ID: {student.id.substring(0, 8)}...
                             </p>
                           </div>

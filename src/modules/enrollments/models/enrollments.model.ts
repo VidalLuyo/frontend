@@ -10,29 +10,29 @@ export interface Enrollment {
   studentId: string; // ✅ Requerido
   institutionId: string; // ✅ Requerido
   classroomId: string; // ✅ Requerido
-  
+
   // Información académica
   academicYear: string; // ✅ Requerido - "2025", "2024"
   academicPeriodId: string; // ✅ Requerido
   enrollmentDate?: string; // ISO format date - Auto-generado por backend
   enrollmentStatus?: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'CANCELLED'; // Default: "ACTIVE"
   enrollmentType?: 'NUEVA' | 'REINSCRIPCION'; // Default: "NUEVA"
-  
+
   // Información adicional
   previousInstitution?: string; // Solo para reinscripciones
   observations?: string; // Texto libre
-  
+
   // Información del estudiante
   ageGroup: string; // ✅ Requerido
   shift: string; // ✅ Requerido
   section: string; // ✅ Requerido - "A", "B", "C"
   modality: string; // ✅ Requerido
-  
+
   // Nuevos campos del schema del backend
   educationalLevel?: string; // Default: "INITIAL"
   studentAge?: number; // Short en backend - 3, 4, 5
   enrollmentCode?: string; // "MAT2025001"
-  
+
   // 📋 Documentos Requeridos (todos boolean, default: false)
   birthCertificate?: boolean; // Certificado de nacimiento
   studentDni?: boolean; // DNI del estudiante
@@ -45,7 +45,7 @@ export interface Enrollment {
   healthRecord?: boolean; // Ficha de salud
   signedEnrollmentForm?: boolean; // Ficha de matrícula firmada
   dniVerification?: boolean; // Verificación de DNI
-  
+
   // Campo de control
   deleted?: boolean; // Soft delete - Default: false
 }
@@ -54,9 +54,9 @@ export interface Enrollment {
 export type { AcademicPeriod, CreateAcademicPeriodDto, UpdateAcademicPeriodDto, AcademicPeriodFilters } from './academicPeriod.model';
 
 // 📋 DTOs para creación y actualización
-export interface CreateEnrollmentDto extends Omit<Enrollment, 'id' | 'enrollmentDate' | 'deleted'> {}
+export interface CreateEnrollmentDto extends Omit<Enrollment, 'id' | 'enrollmentDate' | 'deleted'> { }
 
-export interface UpdateEnrollmentDto extends Partial<Omit<Enrollment, 'id'>> {}
+export interface UpdateEnrollmentDto extends Partial<Omit<Enrollment, 'id'>> { }
 
 
 

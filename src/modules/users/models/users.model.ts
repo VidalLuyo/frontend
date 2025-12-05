@@ -20,7 +20,7 @@ export interface User {
   updatedAt: string
 }
 
-export type UserRole = 'ADMIN' | 'PADRE' | 'MADRE' | 'DIRECTOR' | 'AUXILIAR' | 'TUTOR'
+export type UserRole = 'ADMIN' | 'PADRE' | 'MADRE' | 'DIRECTOR' | 'PROFESOR' | 'AUXILIAR' | 'TUTOR'
 
 export type UserStatus = 'ACTIVE' | 'INACTIVE'
 

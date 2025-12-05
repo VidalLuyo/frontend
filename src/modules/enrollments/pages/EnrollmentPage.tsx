@@ -177,15 +177,7 @@ export function EnrollmentPage() {
   const loadInitialData = useCallback(async () => {
     try {
       // Probar endpoints si estamos en modo desarrollo
-      if (INTEGRATION_CONFIG.ENABLE_LOGGING) {
-        console.log('🧪 Probando endpoints antes de cargar datos...');
-        try {
-          const { enrollmentTestService } = await import('../service/EnrollmentTest.service');
-          await enrollmentTestService.testAllEndpoints();
-        } catch (testError) {
-          console.warn('⚠️ No se pudo ejecutar las pruebas de endpoints:', testError);
-        }
-      }
+
       
       await Promise.all([
         fetchEnrollments(),
@@ -309,7 +301,7 @@ export function EnrollmentPage() {
 
     try {
       if (enrollment.id) {
-        await validateAndUpdate(enrollment.id, enrollment);
+        const updatedEnrollment = await validateAndUpdate(enrollment.id, enrollment);
         
         // Mostrar alerta de éxito
         await Swal.fire({
@@ -322,8 +314,8 @@ export function EnrollmentPage() {
           timerProgressBar: true
         });
         
-        // Actualizar la lista local
-        setEnrollments(prev => prev.map(e => e.id === enrollment.id ? enrollment : e));
+        // Actualizar la lista local con los datos del backend
+        setEnrollments(prev => prev.map(e => e.id === enrollment.id ? updatedEnrollment : e));
       } else {
         const newEnrollment = await validateAndCreate(enrollment);
         
@@ -714,7 +706,7 @@ export function EnrollmentPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <div className="flex items-center justify-center">
             <RefreshCw className="animate-spin h-8 w-8 text-blue-600 mr-3" />
-            <p className="text-lg text-gray-600">Cargando datos desde el backend...</p>
+            <p className="text-lg text-gray-600">Cargando datos ...</p>
           </div>
         </div>
       </div>
@@ -1335,7 +1327,21 @@ export function EnrollmentPage() {
                     
                     <div>
                       <h4 className="text-xs font-medium text-blue-600 uppercase tracking-wide">Edad</h4>
-                      <p className="mt-1 text-sm font-medium text-gray-900">{detailEnrollment.studentAge} años</p>
+                      <p className="mt-1 text-sm font-medium text-gray-900">
+                        {(() => {
+                          // Calcular edad desde ageGroup para evitar problemas de concatenación
+                          const ageMap: Record<string, number> = {
+                            "3_AÑOS": 3,
+                            "3 años": 3,
+                            "4_AÑOS": 4,
+                            "4 años": 4,
+                            "5_AÑOS": 5,
+                            "5 años": 5
+                          };
+                          const age = ageMap[detailEnrollment.ageGroup] || detailEnrollment.studentAge || 0;
+                          return `${age} años`;
+                        })()}
+                      </p>
                     </div>
                     
                     <div>
@@ -1565,8 +1571,7 @@ export function EnrollmentPage() {
           onCancel={() => setShowIntegratedEnrollmentForm(false)}
         />
       </Modal>
-
-
+      
     </div>
   );
 }

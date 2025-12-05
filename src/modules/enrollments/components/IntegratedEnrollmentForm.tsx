@@ -452,7 +452,7 @@ export const IntegratedEnrollmentForm: React.FC<IntegratedEnrollmentFormProps> =
                   <label>Nivel Educativo</label>
                   <div className="readonly-field">
                     <span>🎓 Inicial</span>
-                    <small>(Por defecto para educación inicial)</small>
+                    
                   </div>
                   <input type="hidden" name="educationalLevel" value="INITIAL" />
                 </div>
@@ -461,7 +461,7 @@ export const IntegratedEnrollmentForm: React.FC<IntegratedEnrollmentFormProps> =
                   <label>Estado de Matrícula</label>
                   <div className="readonly-field">
                     <span>⏳ Pendiente</span>
-                    <small>(Se puede activar posteriormente)</small>
+                    
                   </div>
                   <input type="hidden" name="enrollmentStatus" value="PENDING" />
                 </div>
@@ -492,33 +492,6 @@ export const IntegratedEnrollmentForm: React.FC<IntegratedEnrollmentFormProps> =
                   disabled={isSubmitting}
                 />
               </div>
-            </div>
-
-            {/* Sección de Documentos */}
-            <div className="documents-section">
-              <h3>
-                <i className="fas fa-file-alt"></i>
-                Documentos Requeridos
-              </h3>
-              
-              <div className="documents-progress">
-                <div className="progress-header">
-                  <span className="progress-text">
-                    {calculateDocumentProgress().completed}/{calculateDocumentProgress().total} completados
-                  </span>
-                  <span className="progress-percentage">
-                    {calculateDocumentProgress().percentage}%
-                  </span>
-                </div>
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill"
-                    style={{ width: `${calculateDocumentProgress().percentage}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Documentos movidos al paso 5 */}
             </div>
 
             {/* Resumen de la matrícula */}

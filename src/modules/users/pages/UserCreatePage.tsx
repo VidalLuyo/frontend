@@ -205,6 +205,7 @@ export function UserCreatePage() {
           { value: "TUTOR", label: "Tutor" },
           { value: "AUXILIAR", label: "Auxiliar" },
           { value: "PADRE", label: "Padre" },
+          {value: "PROFESOR", label: "Profesor"},
           { value: "MADRE", label: "Madre" },
      ];
 

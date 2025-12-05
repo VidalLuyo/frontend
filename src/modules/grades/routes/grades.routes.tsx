@@ -1,19 +1,20 @@
 /**
- * Rutas del módulo Grade
- * Define todas las rutas relacionadas con notas
+ * Rutas del módulo Grades (Notas)
+ * Se inyectan en AppRouter dentro de <DashboardLayout />
  */
-
-import { Route } from 'react-router-dom'
-import { GradePage } from '../pages/GradePage'
-import { GradeCreatePage } from '../pages/GradeCreatePage'
-import { GradeDetailPage } from '../pages/GradeDetailPage'
-import { GradeEditPage } from '../pages/GradeEditPage'
+import { Route } from "react-router-dom";
+import GradesPage from "../pages/GradesPage";
+import GradeCreatePage from "../pages/GradeCreatePage";
 
 export const gradesRoutes = (
   <>
-    <Route path="notas" element={<GradePage />} />
-    <Route path="notas/nuevo" element={<GradeCreatePage />} />
-    <Route path="notas/:id" element={<GradeDetailPage />} />
-    <Route path="notas/:id/editar" element={<GradeEditPage />} />
+    {/* /grades -> listado principal */}
+    <Route path="grades" element={<GradesPage />} />
+
+    {/* /notas -> alias del listado */}
+    <Route path="notas" element={<GradesPage />} />
+
+    {/* /grades/new -> crear boleta */}
+    <Route path="grades/new" element={<GradeCreatePage />} />
   </>
-)
+);

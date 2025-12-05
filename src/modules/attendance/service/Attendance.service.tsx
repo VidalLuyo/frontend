@@ -6,7 +6,7 @@ import type {
   AttendanceStats,
 } from "../models/attendance.model";
 
-const BASE_URL = "PLACEHOLDER_API_URL";
+const BASE_URL = "http://localhost:9087/api";
 const API_BASE_URL = `${BASE_URL}/attendance`;
 
 // Interfaces para datos sin procesar de los servicios externos

@@ -174,43 +174,17 @@ export function AttendanceRecordsCreatePage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header limpio */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/asistencias")}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                <span>Volver</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300" />
-              <h1 className="text-xl font-semibold text-gray-900">
-                Registrar Asistencia
-              </h1>
-            </div>
+        <div className="max-w-[1600px] mx-auto px-8 lg:px-12">
+          <div className="flex items-center h-16">
             <button
-              type="button"
-              onClick={() => navigate("/asistencias/nuevo/masivo")}
-              className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              onClick={() => navigate("/asistencias")}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <svg
-                className="w-4 h-4"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -219,248 +193,300 @@ export function AttendanceRecordsCreatePage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  d="M15 19l-7-7 7-7"
                 />
               </svg>
-              <span>Registro Masivo</span>
+              <span className="font-medium">Volver</span>
             </button>
+            <div className="h-6 w-px bg-gray-300 mx-4" />
+            <h1 className="text-xl font-semibold text-gray-900">
+              Registrar Asistencia
+            </h1>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <form onSubmit={handleSubmit} className="p-6">
-            <div className="mb-4">
-              <h2 className="text-base font-semibold text-gray-900">
-                Información de Asistencia
-              </h2>
-              <p className="text-xs text-gray-600 mt-0.5">
-                Los campos marcados con <span className="text-red-500">*</span>{" "}
-                son obligatorios
-              </p>
-            </div>
+      <div className="max-w-[1600px] mx-auto px-8 lg:px-12 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Formulario principal - 2/3 */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+              <form onSubmit={handleSubmit}>
+                <div className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                    Información del Registro
+                  </h2>
+                  <p className="text-sm text-gray-500 mb-5">
+                    Complete los datos para registrar la asistencia
+                  </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Institución */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                  Institución Educativa <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.institutionId}
-                  onChange={(e) =>
-                    handleChange("institutionId", e.target.value)
-                  }
-                  className="w-full px-3 py-2 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm hover:border-gray-400"
-                >
-                  <option value="">Seleccione institución</option>
-                  {Array.isArray(institutions) &&
-                    institutions.map((institution) => (
-                      <option key={institution.id} value={institution.id}>
-                        {institution.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+                  <div className="space-y-4">
+                    {/* Institución */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Institución Educativa{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        required
+                        value={formData.institutionId}
+                        onChange={(e) =>
+                          handleChange("institutionId", e.target.value)
+                        }
+                        className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm"
+                      >
+                        <option value="">Seleccione institución</option>
+                        {Array.isArray(institutions) &&
+                          institutions.map((institution) => (
+                            <option key={institution.id} value={institution.id}>
+                              {institution.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
 
-              {/* Aula */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Aula <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.classroomId}
-                  onChange={(e) => handleChange("classroomId", e.target.value)}
-                  disabled={!formData.institutionId}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed hover:border-gray-400"
-                >
-                  <option value="">
-                    {formData.institutionId
-                      ? "Seleccione aula"
-                      : "Primero seleccione institución"}
-                  </option>
-                  {Array.isArray(classrooms) &&
-                    classrooms.map((classroom) => (
-                      <option key={classroom.id} value={classroom.id}>
-                        {classroom.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
+                    {/* Aula y Estudiante en grid */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Aula <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          required
+                          value={formData.classroomId}
+                          onChange={(e) =>
+                            handleChange("classroomId", e.target.value)
+                          }
+                          disabled={!formData.institutionId}
+                          className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500"
+                        >
+                          <option value="">
+                            {formData.institutionId
+                              ? "Seleccione aula"
+                              : "Primero seleccione institución"}
+                          </option>
+                          {Array.isArray(classrooms) &&
+                            classrooms.map((classroom) => (
+                              <option key={classroom.id} value={classroom.id}>
+                                {classroom.name}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
 
-              {/* Estudiante */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Estudiante <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.studentId}
-                  disabled={!isStudentSelectEnabled}
-                  onChange={(e) => handleChange("studentId", e.target.value)}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed hover:border-gray-400"
-                >
-                  <option value="">
-                    {!formData.classroomId
-                      ? "Primero seleccione aula"
-                      : studentsInClassroom.length === 0
-                      ? "No hay ningún estudiante en esta aula"
-                      : "Seleccione estudiante"}
-                  </option>
-                  {studentsInClassroom.map((student) => (
-                    <option key={student.id} value={student.id}>
-                      {student.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Estudiante <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          required
+                          value={formData.studentId}
+                          disabled={!isStudentSelectEnabled}
+                          onChange={(e) =>
+                            handleChange("studentId", e.target.value)
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500"
+                        >
+                          <option value="">
+                            {!formData.classroomId
+                              ? "Primero seleccione aula"
+                              : studentsInClassroom.length === 0
+                              ? "No hay estudiantes"
+                              : "Seleccione estudiante"}
+                          </option>
+                          {studentsInClassroom.map((student) => (
+                            <option key={student.id} value={student.id}>
+                              {student.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
 
-              {/* Fecha */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Fecha <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={formData.attendanceDate}
-                  onChange={(e) =>
-                    handleChange("attendanceDate", e.target.value)
-                  }
-                  disabled={!formData.institutionId}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed hover:border-gray-400"
-                />
-              </div>
+                    {/* Fecha, Año y Estado en grid */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Fecha <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          required
+                          value={formData.attendanceDate}
+                          onChange={(e) =>
+                            handleChange("attendanceDate", e.target.value)
+                          }
+                          disabled={!formData.institutionId}
+                          className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50"
+                        />
+                      </div>
 
-              {/* Año Académico */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Año Académico
-                </label>
-                <input
-                  type="number"
-                  value={formData.academicYear}
-                  readOnly
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm text-gray-700 cursor-not-allowed"
-                />
-              </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Año Académico
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.academicYear}
+                          readOnly
+                          className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700"
+                        />
+                      </div>
 
-              {/* Estado */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Estado <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.attendanceStatus}
-                  onChange={(e) =>
-                    handleChange(
-                      "attendanceStatus",
-                      e.target.value as AttendanceStatus
-                    )
-                  }
-                  disabled={!formData.institutionId}
-                  className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed hover:border-gray-400"
-                >
-                  {ATTENDANCE_STATUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                          Estado <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          required
+                          value={formData.attendanceStatus}
+                          onChange={(e) =>
+                            handleChange(
+                              "attendanceStatus",
+                              e.target.value as AttendanceStatus
+                            )
+                          }
+                          disabled={!formData.institutionId}
+                          className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm disabled:bg-gray-50"
+                        >
+                          {ATTENDANCE_STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
 
-              {/* Hora de Llegada */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Hora Llegada (Automática)
-                </label>
-                <input
-                  type="time"
-                  value={formData.arrivalTime || ""}
-                  readOnly
-                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm text-gray-700 cursor-not-allowed"
-                />
-              </div>
-
-              {/* Hora de Salida - Info */}
-              <div className="md:col-span-2 lg:col-span-2 bg-blue-50 rounded-xl p-5 border-2 border-blue-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <svg
-                      className="w-6 h-6 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    {/* Hora de Llegada */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Hora de Llegada (Automática)
+                      </label>
+                      <input
+                        type="time"
+                        value={formData.arrivalTime || ""}
+                        readOnly
+                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700"
                       />
-                    </svg>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-base font-semibold text-gray-800">
-                      Hora de Salida
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      La hora de salida se registra posteriormente al editar la
-                      asistencia
-                    </p>
-                  </div>
+                </div>
+
+                {/* Botones */}
+                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/asistencias")}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 shadow-sm text-sm"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        Guardando...
+                      </span>
+                    ) : (
+                      "Registrar Asistencia"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Sidebar - 1/3 */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Card de ayuda */}
+            <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-5 h-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                    Información
+                  </h3>
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    La hora de llegada se registra automáticamente. La hora de
+                    salida se puede agregar posteriormente editando el registro.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Botones */}
-            <div className="flex gap-3 pt-4 mt-4 border-t border-gray-200">
+            {/* Acceso rápido */}
+            <div className="bg-white rounded-xl p-5 border border-gray-200">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                Acceso Rápido
+              </h3>
               <button
                 type="button"
-                onClick={() => navigate("/asistencias")}
-                className="flex-1 px-4 py-2.5 border-2 border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-sm shadow-sm"
+                onClick={() => navigate("/asistencias/nuevo/masivo")}
+                className="w-full flex items-center gap-3 px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors text-left"
               >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 text-sm"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Guardando...
-                  </span>
-                ) : (
-                  "Registrar Asistencia"
-                )}
+                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-indigo-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    Registro Masivo
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Registrar múltiples estudiantes
+                  </p>
+                </div>
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
