@@ -1,4 +1,5 @@
-const FILE_API_URL = "http://localhost:9087/api/files";
+// Esta URL será reemplazada por el script docker-entrypoint.sh
+const FILE_API_URL = "PLACEHOLDER_API_URL/api/files";
 
 interface FileUploadResponse {
   url: string;
